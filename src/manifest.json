@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Seattle Times",
+  "version": "0.0.1",
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "icons": {
+    "128": "icon-60.png"
+  },
+  "description": "",
+  "offline_enabled": true,
+  "permissions": [
+    "http://*.seattletimes.com/*"
+  ]
+}

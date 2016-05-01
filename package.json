@@ -1,0 +1,21 @@
+{
+  "name": "seatimes-chrome",
+  "version": "1.0.0",
+  "description": "A Chrome-based client for The Seattle Times",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundle": "node scripts/bundle.js",
+    "copy": "node scripts/copy.js",
+    "less": "node scripts/less.js",
+    "watch": "node scripts/watch.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "browserify": "^13.0.0",
+    "less": "^2.6.1",
+    "shelljs": "^0.7.0"
+  }
+}
