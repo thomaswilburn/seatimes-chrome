@@ -1,5 +1,3 @@
-console.log("hello");
-
 var ipc = require("./ipc");
 
-ipc.ask("hello", { world: true }, data => console.log(data));
+setTimeout(() => ipc.request("echo", { time: Date.now() }, data => console.log(data)), 3000);

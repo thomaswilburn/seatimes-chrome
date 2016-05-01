@@ -1,13 +1,10 @@
-console.log("hello from the worker");
+var router = require("./router");
+var log = require("./log");
 
 self.onmessage = function(e) {
-  console.log(JSON.stringify(e.data), self);
   var message = e.data;
-  setTimeout(function() {
-    self.postMessage({
-      type: "answer",
-      id: message.id,
-      data: "ping"
-    });
-  }, 100);
+  if (message.type == "request") {
+    router.route(message, postMessage);
+  }
 }
+

@@ -9,15 +9,16 @@ var guid = 0;
 var registry = {};
 var channel = new EventEmitter();
 
-channel.ask = function(route, data, callback) {
+channel.request = function(route, data, callback) {
+  console.log(route, data, worker);
   var id = guid++;
-  worker.postMessage({ type: "ask", id, route, data });
+  worker.postMessage({ type: "request", id, route, data });
   registry[id] = callback;
 };
 
 worker.onmessage = function(e) {
   var message = e.data;
-  if (message.type == "answer") {
+  if (message.type == "response") {
     var callback = registry[message.id];
     if (!callback) return console.error("Undeliverable message: ", message.data);
     callback(message.data);
