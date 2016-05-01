@@ -2,17 +2,6 @@ var gaze = require("gaze");
 var spawn = require("child_process").spawn;
 var chalk = require("chalk");
 
-var debounce = function(f, delay) {
-  var timeout = null;
-  return function() {
-    if (timeout) return;
-    timeout = setTimeout(function() {
-      timeout = null;
-      f();
-    }, delay || 100);
-  }
-};
-
 var npm = process.platform == "win32" ? "npm.cmd" : "npm";
 
 var watch = function(name, pattern, scripts) {
