@@ -12,7 +12,6 @@ var registry = {};
 var channel = new EventEmitter();
 
 channel.request = function(route, data, callback) {
-  console.log(route, data, worker);
   var id = guid++;
   worker.postMessage({ type: "request", id, route, data });
   registry[id] = callback;

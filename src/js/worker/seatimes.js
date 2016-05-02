@@ -14,5 +14,35 @@ Request flow:
 */
 
 var network = require("./network");
-var storage = require("./storage");
 var config = require("./config.json");
+var events = require("./events");
+
+var Database = require("./idb");
+
+var db = new Database("seatimes", 1, function() {
+  return db.createStore("articles", "id");
+});
+
+module.exports = {
+  getArticle: function(id) {
+    var url = config.endpointURL + "posts/" + id;
+    var fromNetwork = network.fast(url);
+    var fromStorage = db.get("articles", id);
+    //compare results when both are in
+    Promise.all([fromNetwork, fromStorage]).then(function(both) {
+      var [netted, stored] = both;
+      //TODO: if the network is newer, fire an update event with it
+      //either way, if it's valid, store it in the DB
+      netted.id = netted.ID;
+      db.set("articles", netted);
+    });
+    //assume storage is faster, fall back on network
+    return fromStorage.then(function(data) {
+      if (!data) return fromNetwork;
+      return Promise.resolve(data);
+    });
+  },
+  getSection: function(slug) {
+
+  }
+}

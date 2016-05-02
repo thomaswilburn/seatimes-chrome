@@ -6,8 +6,6 @@ priority for caching processes and so-on.
 
 */
 
-var storage = require("./storage");
-
 var outbound = {};
 
 var xhr = function(url) {
