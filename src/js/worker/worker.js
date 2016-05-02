@@ -1,11 +1,4 @@
-var echoHandler = function(data, callback) {
-  console.log(data);
-  callback(data);
-};
-
-var routes = {
-  "echo": echoHandler
-};
+var routes = require("./routes");
 
 self.onmessage = function(e) {
   var message = e.data;

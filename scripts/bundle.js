@@ -8,7 +8,7 @@ var seeds = {
 
 for (var src in seeds) {
   var dest = seeds[src];
-  var b = browserify();
+  var b = browserify({ debug: true });
   b.add(src);
 
   var bundle = b.bundle();

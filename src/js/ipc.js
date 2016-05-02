@@ -3,6 +3,8 @@ var EventEmitter = require("events");
 
 //When compiled, the worker script lives at ./worker.js
 var worker = new Worker("./worker.js");
+console.log("Worker process started");
+console.log(worker);
 
 //Keep track of round-trip messages using a unique ID for each
 var guid = 0;
