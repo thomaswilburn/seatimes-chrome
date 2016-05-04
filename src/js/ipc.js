@@ -1,7 +1,10 @@
 //This module loads and communicates with the primary worker thread.
 var EventEmitter = require("events");
 
+var metrics = require("./metrics");
+
 //When compiled, the worker script lives at ./worker.js
+var startup = new metrics.Timer("Process", "Worker startup");
 var worker = new Worker("./worker.js");
 console.log("Worker process started");
 console.log(worker);
@@ -28,5 +31,7 @@ worker.onmessage = function(e) {
     channel.emit(message.type, message.data);
   }
 };
+
+channel.on("workerReady", () => startup.end());
 
 module.exports = channel;

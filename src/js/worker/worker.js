@@ -15,3 +15,4 @@ self.onmessage = function(e) {
   }
 }
 
+self.postMessage({ type: "workerReady" });
