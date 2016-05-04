@@ -1,5 +1,5 @@
 //This module loads and communicates with the primary worker thread.
-var EventEmitter = require("events");
+var channel = require("./util/events");
 
 var metrics = require("./metrics");
 
@@ -12,12 +12,12 @@ console.log(worker);
 //Keep track of round-trip messages using a unique ID for each
 var guid = 0;
 var registry = {};
-var channel = new EventEmitter();
-
-channel.request = function(route, data, callback) {
-  var id = guid++;
-  worker.postMessage({ type: "request", id, route, data });
-  registry[id] = callback;
+var ipc = {
+  request: function(route, data, callback) {
+    var id = guid++;
+    worker.postMessage({ type: "request", id, route, data });
+    registry[id] = callback;
+  }
 };
 
 worker.onmessage = function(e) {
@@ -34,4 +34,4 @@ worker.onmessage = function(e) {
 
 channel.on("workerReady", () => startup.end());
 
-module.exports = channel;
+module.exports = ipc;

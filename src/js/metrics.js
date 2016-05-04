@@ -25,7 +25,7 @@ Timer.prototype = {
 
 var report = function() {
   //report metrics from window.performance and the buckets
-  var metrics = { Process: [] };
+  var metrics = { App: {} };
   for (var b in buckets) {
     //find the average for each metric
     metrics[b] = {};

@@ -1,4 +1,5 @@
 var routes = require("./routes");
+var events = require("../util/events");
 
 self.onmessage = function(e) {
   var message = e.data;
@@ -12,7 +13,10 @@ self.onmessage = function(e) {
         data: response
       });
     });
+  } else {
+    events.emit(message.type, message.data);
   }
-}
+};
 
+console.log("Worker is listening...");
 self.postMessage({ type: "workerReady" });

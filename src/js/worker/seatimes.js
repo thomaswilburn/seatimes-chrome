@@ -13,7 +13,7 @@ Request flow:
 
 var network = require("./network");
 var config = require("./config.json");
-var events = require("./events");
+var events = require("../util/events");
 
 var Database = require("./idb");
 
