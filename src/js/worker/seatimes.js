@@ -21,9 +21,11 @@ var db = new Database("seatimes", 1, function() {
   return db.createStore("articles", "id");
 });
 
-module.exports = {
+self.db = db;
+
+var api = {
   getArticle: function(id) {
-    var url = config.endpointURL + "posts/" + id;
+    var url = config.endpoint + "posts/" + id;
     var fromNetwork = network.fast(url);
     var fromStorage = db.get("articles", id);
     //compare results when both are in
@@ -36,11 +38,32 @@ module.exports = {
     });
     //assume storage is faster, fall back on network
     return fromStorage.then(function(data) {
+      // if (!data) console.log("Database miss for " + id);
       if (!data) return fromNetwork;
       return Promise.resolve(data);
     });
   },
   getSection: function(slug) {
-
+    var url = config.endpoint + "hub/section/" + slug;
+    // start pre-caching sections when they load up
+    return network.fast(url).then(function(data) {
+      var ids = data.posts.map(api.getArticle);
+      return Promise.all(ids).then(function(results) {
+        data.posts = results;
+        return Promise.resolve(data);
+      });
+    });
+  },
+  getZone: function(slug) {
+    var url = config.endpoint + "hub/zone/" + slug;
+    return network.fast(url).then(function(data) {
+      var ids = data.posts.map(api.getArticle);
+      return Promise.all(ids).then(function(results) {
+        data.posts = results;
+        return Promise.resolve(data);
+      });
+    });
   }
-}
+};
+
+module.exports = api;

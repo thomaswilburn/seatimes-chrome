@@ -10,7 +10,6 @@ var outbound = {};
 
 var xhr = function(url) {
   if (url in outbound) return outbound[url];
-  console.log("Network request: " + url);
   var req = new Promise(function(ok, fail) {
     var x = new XMLHttpRequest();
     x.open("GET", url);

@@ -4,7 +4,7 @@ var EventEmitter = require("events");
 var metrics = require("./metrics");
 
 //When compiled, the worker script lives at ./worker.js
-var startup = new metrics.Timer("Process", "Worker startup");
+var startup = new metrics.Timer("App", "Worker startup");
 var worker = new Worker("./worker.js");
 console.log("Worker process started");
 console.log(worker);

@@ -13,6 +13,7 @@
   "description": "",
   "offline_enabled": true,
   "permissions": [
-    "http://*.seattletimes.com/*"
+    "http://*.seattletimes.com/*",
+    "webview"
   ]
 }

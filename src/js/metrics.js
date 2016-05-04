@@ -34,8 +34,8 @@ var report = function() {
     }
   }
   //Add browser-tracked startup metrics
-  var perf = window.performance;
-  metrics.Process["App interactive"] = perf.timing.domInteractive - perf.timing.navigationStart;
+  var perf = self.performance;
+  metrics.App["DOM interactive"] = perf.timing.domInteractive - perf.timing.navigationStart;
   return metrics;
 };
 

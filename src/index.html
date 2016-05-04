@@ -10,12 +10,22 @@
       <nav class="menu"></nav>
 
       <!-- section headlines -->
-      <section class="section-lists"></section>
+      <section class="section-lists">
+        <nav class="toolbar">
+          <ul class="tabs"></ul>
+        </nav>
+        <div class="lists"></div>
+      </section>
 
       <!-- actual article view -->
-      <section class="article-webview"></section>
+      <section class="article-panel">
+        <nav class="toolbar">
+          <a class="back-button">&lt; back</a>
+        </nav>
+        <webview></webview>
+      </section>
 
     </main>
-    <script src="app.js"></script>
+    <script src="app.js" async></script>
   </body>
 </html>
