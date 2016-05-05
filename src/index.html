@@ -8,18 +8,19 @@
       
       <!-- pull out menu? -->
       <nav class="slide-menu">
-        <ul>
-          <li> <a data-event="showSettings">Settings</a>
-          <li> <a data-event="showMetrics">Metrics</a>
+        <div class="backdrop"></div>
+        <ul class="drawer">
+          <li> <a event-trigger="showSettings">Settings</a>
+          <li> <a event-trigger="showMetrics">Metrics</a>
         </ul>
       </nav>
 
       <!-- section headlines -->
       <section class="section-lists">
         <nav class="toolbar">
-          <ul class="tabs"></ul>
+          <a class="menu-icon">Menu</a>
         </nav>
-        <div class="lists"></div>
+        <div class="content"></div>
       </section>
 
       <!-- actual article view -->
@@ -27,7 +28,9 @@
         <nav class="toolbar">
           <a class="back-button">&lt; back</a>
         </nav>
-        <webview></webview>
+        <div class="webview-container">
+          <webview autosize partition="persist:seatimes"></webview>
+        </div>
       </section>
 
     </main>

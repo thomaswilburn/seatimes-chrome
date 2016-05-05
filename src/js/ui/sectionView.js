@@ -1,8 +1,17 @@
 var ipc = require("../ipc");
+var events = require("../util/events");
 
-var element = document.querySelector("section.section-lists");
-var tabs = element.querySelector(".tabs");
-var lists = element.querySelector(".lists");
+var container = document.querySelector("section.section-lists");
+var content = container.querySelector(".content");
+
+var clos
+
+container.addEventListener("click", function(e) {
+  var up = e.target.closest("[article-id]");
+  if (up) {
+    events.emit("loadArticle", { id: up.getAttribute("article-id") * 1 });
+  }
+});
 
 var sections = [
   { type: "zone", slug: "editors-picks-homepage", label: "Editors' picks" },
@@ -10,23 +19,55 @@ var sections = [
   // { type: "section", slug: "nation-world", label: "Nation/World" }
 ];
 
-sections.forEach(function(section) {
-  var tab = document.createElement("li");
-  tab.innerHTML = section.label;
-  tab.setAttribute("slug", section.slug);
-  tabs.appendChild(tab);
-  section.tab = tab;
+//Chrome apps have a super-strict CSP for images
+//We can remove this when it's deployed as a web app.
+var loadImage = function(url) {
+  return new Promise(function(ok, fail) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.responseType = "blob";
+    xhr.send();
+    xhr.onload = function() {
+      ok({ url, blob: URL.createObjectURL(xhr.response) });
+    }
+  });
+}
 
-  var list = document.createElement("div");
-  list.setAttribute("slug", section.slug);
-  lists.appendChild(list);
-  section.list = list;
+var loadSection = function(data) {
+  var first = data.posts.shift();
+  var images = data.posts.filter(p => p.teaser_image.sizes).map(p => loadImage(p.teaser_image.sizes.square_x_small));
+  images.push(loadImage(first.teaser_image.sizes.standard_large));
+  Promise.all(images).then(function(blobs) {
+    var urlMap = blobs.reduce(function(map, value) {
+      map[value.url] = value.blob;
+      return map;
+    }, {});
+    var listHTML = data.posts.map(function(post) {
+      var thumbnail = "";
+      if (post.teaser_image && post.teaser_image.sizes && post.teaser_image.sizes.square_x_small) {
+        thumbnail = `<img src="${urlMap[post.teaser_image.sizes.square_x_small]}">`;
+      }
+      return `
+        <li>
+          <a article-id="${post.id}">
+            <span class="label">${post.title}</span>
+            ${thumbnail}
+          </a>
+        </li>
+      `;
+    }).join("");
+    content.innerHTML = `
+  <div class="top-item">
+    <a article-id="${first.id}">
+      <img src="${urlMap[first.teaser_image.sizes.standard_large]}">
+      <h1>${first.title}</h1>
+    </a>
+    <ul class="remaining">
+      ${listHTML}
+    </ul>  
+  </div>
+    `;
+  });
+}
 
-  ipc.request(section.type == "zone" ? "getZone" : "getSection", { slug: section.slug }, function(response) {
-    var html = response.posts.map(function(post) {
-      return `<li> <a class="view-post" data-id="${post.id}">${post.title}</a></li>`;
-    });
-    section.list.innerHTML = html.join("\n");
-  })
-});
-
+module.exports = { loadSection }

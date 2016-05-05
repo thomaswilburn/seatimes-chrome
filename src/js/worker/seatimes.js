@@ -23,9 +23,20 @@ var db = new Database("seatimes", 1, function() {
 
 self.db = db;
 
+var getCollection = function(slug, urlSegment) {
+  var url = config.endpoint + urlSegment + slug;
+  return network.fast(url).then(function(data) {
+    var ids = data.posts.map(api.getArticle);
+    return Promise.all(ids).then(function(results) {
+      data.posts = results;
+      return Promise.resolve(data);
+    });
+  });
+};
+
 var api = {
   getArticle: function(id) {
-    var url = config.endpoint + "posts/" + id;
+    var url = config.endpoint + "hub/post/" + id;
     var fromNetwork = network.fast(url);
     var fromStorage = db.get("articles", id);
     //compare results when both are in
@@ -33,7 +44,7 @@ var api = {
       var [netted, stored] = both;
       //TODO: if the network is newer, fire an update event with it
       //either way, if it's valid, store it in the DB
-      netted.id = netted.ID;
+      netted.id = id;
       db.set("articles", netted);
     });
     //assume storage is faster, fall back on network
@@ -44,25 +55,10 @@ var api = {
     });
   },
   getSection: function(slug) {
-    var url = config.endpoint + "hub/section/" + slug;
-    // start pre-caching sections when they load up
-    return network.fast(url).then(function(data) {
-      var ids = data.posts.map(api.getArticle);
-      return Promise.all(ids).then(function(results) {
-        data.posts = results;
-        return Promise.resolve(data);
-      });
-    });
+    return getCollection(slug, "hub/section/");
   },
   getZone: function(slug) {
-    var url = config.endpoint + "hub/zone/" + slug;
-    return network.fast(url).then(function(data) {
-      var ids = data.posts.map(api.getArticle);
-      return Promise.all(ids).then(function(results) {
-        data.posts = results;
-        return Promise.resolve(data);
-      });
-    });
+    return getCollection(slug, "hub/zone/");
   }
 };
 

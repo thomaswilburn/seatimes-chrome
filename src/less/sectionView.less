@@ -1,0 +1,43 @@
+.section-lists {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    background: white;
+    color: black;
+
+    h1 {
+      font-size: 32px;
+    }
+
+    ul.remaining {
+      list-style-type: none;
+      display: block;
+      padding: 0;
+      margin: 0;
+
+      a[article-id] {
+        display: flex;
+        padding: 8px;
+        border-bottom: 1px solid black;
+        clear: right;
+        overflow: hidden;
+        align-items: center;
+
+        .label {
+          flex: 1 1;
+          padding-right: 20px;
+        }
+
+        img {
+          float: right;
+          height: 64px;
+        }
+      }
+    }
+  }
+}

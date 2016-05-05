@@ -1,0 +1,48 @@
+@import "values";
+
+.slide-menu {
+  display: none;
+  z-index: 999;
+
+  .backdrop {
+    opacity: 0;
+    background: fade(black, 80%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: all .2s linear;
+  }
+
+  .drawer {
+    position: fixed;
+    width: 66vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background: @charcoal;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    list-style-type: none;
+    margin: 0;
+    padding: 20px;
+    transition: all .2s ease-in-out;
+
+    li {
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+    }
+  }
+
+  &.prep {
+    display: block;
+  }
+
+  &.activate {
+    .backdrop { opacity: 1 }
+    .drawer { transform: translateX(0) }
+  }
+}
