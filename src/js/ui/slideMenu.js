@@ -9,6 +9,12 @@ events.on("openMenu", function() {
 
 menu.addEventListener("click", function(e) {
   var event = e.target.getAttribute("event-trigger");
-  events.emit(event);
+  if (event) {
+    events.emit(event);
+  }
+  var section = e.target.getAttribute("section-slug");
+  if (section) {
+    events.emit("loadSection", { slug: section });
+  }
   menu.classList.remove("prep", "activate");
-})
+});

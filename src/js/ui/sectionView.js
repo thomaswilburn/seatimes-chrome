@@ -35,8 +35,8 @@ var loadImage = function(url) {
 
 var loadSection = function(data) {
   var first = data.posts.shift();
-  var images = data.posts.filter(p => p.teaser_image.sizes).map(p => loadImage(p.teaser_image.sizes.square_x_small));
-  images.push(loadImage(first.teaser_image.sizes.standard_large));
+  var images = data.posts.filter(p => p.teaser_image && p.teaser_image.sizes).map(p => loadImage(p.teaser_image.sizes.square_x_small));
+  if (first.teaser_image.sizes) images.push(loadImage(first.teaser_image.sizes.standard_large));
   Promise.all(images).then(function(blobs) {
     var urlMap = blobs.reduce(function(map, value) {
       map[value.url] = value.blob;
@@ -59,12 +59,12 @@ var loadSection = function(data) {
     content.innerHTML = `
   <div class="top-item">
     <a article-id="${first.id}">
-      <img src="${urlMap[first.teaser_image.sizes.standard_large]}">
+      <img src="${first.teaser_image.sizes ? urlMap[first.teaser_image.sizes.standard_large] : ""}">
       <h1>${first.title}</h1>
     </a>
     <ul class="remaining">
       ${listHTML}
-    </ul>  
+    </ul>
   </div>
     `;
   });

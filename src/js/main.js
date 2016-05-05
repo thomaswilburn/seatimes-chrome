@@ -21,7 +21,7 @@ handling events--let's dispatch similar to Caret
 */
 
 var webview = document.querySelector("webview");
-var zoneTimer = new metrics.Timer("UI", "Loaded section list");
+var zoneTimer = new metrics.Timer("UI", "Loaded initial zone");
 ipc.request("getZone", { slug: "home-page-centerpiece-top-stories" }, function(data) {
   sectionView.loadSection(data);
   zoneTimer.end();
@@ -32,6 +32,14 @@ events.on("loadArticle", function(def) {
   ipc.request("getArticle", def, function(data) {
     articleView.loadArticle(data);
     articleTimer.end();
+  });
+});
+
+events.on("loadSection", function(def) {
+  var sectionTimer = new metrics.Timer("UI", "Loaded section list");
+  ipc.request("getSection", def, function(data) {
+    sectionView.loadSection(data);
+    sectionTimer.end();
   });
 });
 
