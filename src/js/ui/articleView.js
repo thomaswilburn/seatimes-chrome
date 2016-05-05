@@ -30,7 +30,7 @@ img, iframe, object, video {
   <body>
     <h1>${article.title}</h1>
     <img src="${article.teaser_image.sizes ? article.teaser_image.sizes.standard_large : ""}">
-    ${article.content}
+    ${article.post_content}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
     <script async src="http://www.seattletimes.com/wp-content/themes/st_refresh/js/bundle.min.js?ver=1461861640"></script>
   </body>
