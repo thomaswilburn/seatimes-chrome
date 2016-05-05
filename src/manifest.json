@@ -15,6 +15,5 @@
   "permissions": [
     "http://*.seattletimes.com/*",
     "webview"
-  ],
-  "content_security_policy": "img-src 'self' http://static.seattletimes.com"
+  ]
 }

@@ -19,5 +19,5 @@ var watch = function(name, pattern, scripts) {
 
 //Set watches
 watch("Browserify", "src/js/**/*", ["bundle"]);
-watch("Copy", "src/index.html", ["copy"]);
+watch("Copy", "src/*", ["copy"]);
 watch("LESS", "src/less/**/*", ["less"]);
