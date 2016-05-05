@@ -66,6 +66,17 @@ var api = {
   },
   getZone: function(slug) {
     return getCollection(slug, "hub/zone/");
+  },
+  getChallenges: function() {
+    var data = {
+      title: "Curated",
+      slug: "challenges",
+      posts: [9970675, 9989893]
+    };
+    return Promise.all(data.posts.map(api.getArticle)).then(function(results) {
+      data.posts = results;
+      return Promise.resolve(data);
+    })
   }
 };
 

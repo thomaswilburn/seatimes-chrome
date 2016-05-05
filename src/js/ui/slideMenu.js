@@ -16,5 +16,8 @@ menu.addEventListener("click", function(e) {
   if (section) {
     events.emit("loadSection", { slug: section });
   }
+  if (e.target.classList.contains("challenges")) {
+    events.emit("loadChallenges");
+  }
   menu.classList.remove("prep", "activate");
 });

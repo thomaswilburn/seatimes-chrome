@@ -44,12 +44,19 @@ Object.defineProperty(document, "cookie", { get: () => "", set: () => "" });
     <img src="${article.teaser_image.sizes ? article.teaser_image.sizes.standard_large : ""}">
     ${article.content}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
-    <script src="http://www.seattletimes.com/wp-content/themes/st_refresh/js/bundle.min.js?ver=1461861640"></script>
+    <script async src="http://www.seattletimes.com/wp-content/themes/st_refresh/js/bundle.min.js?ver=1461861640"></script>
+    <script async src="http://apps.seattletimes.com/tags/responsive-frame/responsive-frame.js"></script>
   </body>
 </html>
   `;
   var dataURL = `data:text/html;base64,${self.btoa(unescape(encodeURIComponent(html)))}`;
-  webview.src = dataURL;
+  // webview.src = dataURL;
+  try {
+    webview.src = dataURL;
+    webview.loadDataWithBaseUrl(dataURL, article.link);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 module.exports = { loadArticle, webview }

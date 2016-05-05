@@ -43,6 +43,10 @@ events.on("loadSection", function(def) {
   });
 });
 
+events.on("loadChallenges", function() {
+  ipc.request("getChallenges", sectionView.loadSection);
+});
+
 events.on("showMetrics", () => console.log(metrics.report()));
 
 var menuButton = document.querySelector(".menu-icon");

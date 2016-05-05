@@ -14,6 +14,10 @@ var guid = 0;
 var registry = {};
 var ipc = {
   request: function(route, data, callback) {
+    if (typeof data == "function") {
+      callback = data;
+      data = null;
+    }
     var id = guid++;
     worker.postMessage({ type: "request", id, route, data });
     registry[id] = callback;

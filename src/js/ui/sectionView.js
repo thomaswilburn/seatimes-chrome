@@ -4,8 +4,6 @@ var events = require("../util/events");
 var container = document.querySelector("section.section-lists");
 var content = container.querySelector(".content");
 
-var clos
-
 container.addEventListener("click", function(e) {
   var up = e.target.closest("[article-id]");
   if (up) {
@@ -31,12 +29,17 @@ var loadImage = function(url) {
       ok({ url, blob: URL.createObjectURL(xhr.response) });
     }
   });
-}
+};
+
+var getImage = function(post, size) {
+  if (!post.teaser_image || !post.teaser_image.sizes || !post.teaser_image.sizes[size]) return null;
+  return post.teaser_image.sizes[size];
+};
 
 var loadSection = function(data) {
   var first = data.posts.shift();
   var images = data.posts.filter(p => p.teaser_image && p.teaser_image.sizes).map(p => loadImage(p.teaser_image.sizes.square_x_small));
-  if (first.teaser_image && first.teaser_image.sizes) images.push(loadImage(first.teaser_image.sizes.standard_large));
+  if (getImage(first, "standard_large")) images.push(loadImage(getImage(first, "standard_large")));
   Promise.all(images).then(function(blobs) {
     var urlMap = blobs.reduce(function(map, value) {
       map[value.url] = value.blob;
@@ -44,8 +47,8 @@ var loadSection = function(data) {
     }, {});
     var listHTML = data.posts.map(function(post) {
       var thumbnail = "";
-      if (post.teaser_image && post.teaser_image.sizes && post.teaser_image.sizes.square_x_small) {
-        thumbnail = `<img src="${urlMap[post.teaser_image.sizes.square_x_small]}">`;
+      if (getImage(post, "square_x_small")) {
+        thumbnail = `<img src="${urlMap[getImage(post, "square_x_small")]}">`;
       }
       return `
         <li>
@@ -59,7 +62,7 @@ var loadSection = function(data) {
     content.innerHTML = `
   <div class="top-item">
     <a article-id="${first.id}">
-      <img src="${first.teaser_image.sizes ? urlMap[first.teaser_image.sizes.standard_large] : ""}">
+      <img src="${urlMap[getImage(first, "standard_large")]}">
       <h1>${first.title}</h1>
     </a>
     <ul class="remaining">

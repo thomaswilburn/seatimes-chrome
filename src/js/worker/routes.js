@@ -4,7 +4,7 @@ var sanitizer = require("./sanitize.js");
 module.exports = {
   getArticle: function(data, respond) {
     api.getArticle(data.id).then(function(data) {
-      data.post_content = sanitizer.scrub(data.post_content);
+      data.content = sanitizer.scrub(data.content);
       respond(data);
     });
   },
@@ -13,5 +13,8 @@ module.exports = {
   },
   getZone: function(data, respond) {
     api.getZone(data.slug).then(respond);
+  },
+  getChallenges: function(data, respond) {
+    api.getChallenges().then(respond);
   }
 };
