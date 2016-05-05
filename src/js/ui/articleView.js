@@ -15,6 +15,7 @@ var loadArticle = function(article) {
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8">
     <link rel="stylesheet" href="http://www.seattletimes.com/wp-content/themes/st_refresh/css/styles.min.css?ver=1461861640"/>
     <style>
 body {
@@ -26,18 +27,28 @@ img, iframe, object, video {
   max-width: 100%;
 }
     </style>
+    <script>
+window.SEATIMESCO = {
+  payMeter: {},
+  subscriptions: {},
+  subscriptionSalePromo: {},
+  comments: {},
+  singleSignOn: { info: {} }
+};
+window.dataLayer = [{}];
+Object.defineProperty(document, "cookie", { get: () => "", set: () => "" });
+    </script>
   </head>
   <body>
     <h1>${article.title}</h1>
     <img src="${article.teaser_image.sizes ? article.teaser_image.sizes.standard_large : ""}">
-    ${article.post_content}
+    ${article.content}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
-    <script async src="http://www.seattletimes.com/wp-content/themes/st_refresh/js/bundle.min.js?ver=1461861640"></script>
+    <script src="http://www.seattletimes.com/wp-content/themes/st_refresh/js/bundle.min.js?ver=1461861640"></script>
   </body>
 </html>
   `;
-  var blob = new Blob([html], { type: "text/html" });
-  var dataURL = URL.createObjectURL(blob);
+  var dataURL = `data:text/html;base64,${self.btoa(unescape(encodeURIComponent(html)))}`;
   webview.src = dataURL;
 };
 
