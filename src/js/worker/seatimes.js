@@ -36,8 +36,15 @@ var getCollection = function(slug, urlSegment) {
 
 var api = {
   getArticle: function(id) {
-    var url = config.endpoint + "hub/post/" + id;
-    var fromNetwork = network.fast(url);
+    var hub = config.endpoint + "hub/post/" + id;
+    var raw = config.endpoint + "posts/" + id;
+    var hubContent = network.fast(hub);
+    var rawContent = network.fast(raw);
+    var fromNetwork = Promise.all([hubContent, rawContent]).then(function(results) {
+      var [hub, raw] = results;
+      raw.teaser_image = hub.teaser_image || {};
+      return Promise.resolve(raw);
+    });
     var fromStorage = db.get("articles", id);
     //compare results when both are in
     Promise.all([fromNetwork, fromStorage]).then(function(both) {
