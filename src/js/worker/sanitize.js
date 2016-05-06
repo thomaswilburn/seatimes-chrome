@@ -10,16 +10,25 @@ var walk = function(list, fn) {
   }
 };
 
+var escapes = {
+  "“": "&ldquo;",
+  "”": "&rdquo;",
+  "’": "&rsquo;",
+  "‘": "&lsquo;",
+  "—": "&mdash;"
+};
+
+var escapeRegex = new RegExp("(" + Object.keys(escapes).join("|") + ")", "g");
+var unicodeRegex = /[\u00A0-\u2666]/g;
+
 var scrub = function(html) {
   var dom = parser.parseDOM(html);
   walk(dom, function(node) {
-    //fix protocol-agnostic links
-    // if (node.attribs && node.attribs.src) {
-    //   console.log(node.attribs.src);
-    //   node.attribs.src = node.attribs.src.replace(/^\/\//, "http://");
-    //   console.log(node.attribs.src);
-    // }
-    //fix picturefill elements
+    if (node.type == "text") {
+      node.data = node.data
+        .replace(escapeRegex, c => escapes[c])
+        .replace(unicodeRegex, c => `&#${c.charCodeAt(0)};`);
+    }
     if (node.attribs && node.attribs["data-src-x-small"] && !node.attribs.src) {
       node.attribs.src = node.attribs["data-src-x-small"];
     }

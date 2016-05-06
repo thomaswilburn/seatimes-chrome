@@ -49,7 +49,7 @@ Object.defineProperty(document, "cookie", { get: () => "", set: () => "" });
   </body>
 </html>
   `;
-  var dataURL = `data:text/html;base64,${self.btoa(unescape(encodeURIComponent(html)))}`;
+  var dataURL = `data:text/html;base64,${self.btoa(html)}`;
   // webview.src = dataURL;
   try {
     webview.src = dataURL;
