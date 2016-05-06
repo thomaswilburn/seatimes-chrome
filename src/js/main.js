@@ -47,7 +47,21 @@ events.on("loadChallenges", function() {
   ipc.request("getChallenges", sectionView.loadSection);
 });
 
-events.on("showMetrics", () => console.log(metrics.report()));
+events.on("showMetrics", function() {
+  var report = metrics.report();
+  var section = document.querySelector(".section-lists .content");
+  var html = "<ul>";
+  for (var key in report) {
+    html += `<li> ${key} <ul>`;
+    var items = report[key];
+    for (var line in items) {
+      html += `<li> ${line}: ${items[line]}ms`;
+    }
+    html += "</ul>";
+  }
+  html += "</ul>";
+  section.innerHTML = html;
+});
 
 var menuButton = document.querySelector(".menu-icon");
 menuButton.addEventListener("click", () => events.emit("openMenu"));
