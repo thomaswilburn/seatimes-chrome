@@ -10,8 +10,9 @@
   "icons": {
     "128": "icon-60.png"
   },
-  "description": "",
-  "offline_enabled": true,
+  "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCh9A0p0K76KGXnEYMf4tVxhHUBXQTRh984XrkVSuzX6Tp4al9cj7NgXh3Sjx+0+KctLzpmvCw9bwgWueAE13LhjQ+dJONaR5xhte0KTAfaVRGV5EKCBx6KwzcaBGWBHv3V1b/8CbTENivW3/eVTg0/gmyB0tzfqzEoXy/lnRkZdQIDAQAB",
+  "description": "Read the Seattle Times!",
+  "offline_enabled": false,
   "permissions": [
     "http://*.seattletimes.com/*",
     "webview"
