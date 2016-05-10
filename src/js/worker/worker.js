@@ -18,5 +18,7 @@ self.onmessage = function(e) {
   }
 };
 
+events.on("articleUpdated", data => self.postMessage({ type: "articleUpdated", data }));
+
 console.log("Worker is listening...");
 self.postMessage({ type: "workerReady" });

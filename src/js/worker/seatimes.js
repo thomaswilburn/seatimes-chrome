@@ -38,23 +38,23 @@ var api = {
   getArticle: function(id) {
     var hub = config.endpoint + "hub/post/" + id;
     var raw = config.endpoint + "posts/" + id;
-    var fromNetwork = network.fast(raw);
+    var fromNetwork = network.fast(raw).then(function(data) {
+      data.id = id;
+      db.set("articles", data);
+      return Promise.resolve(data);
+    });
     var fromStorage = db.get("articles", id);
-    var hubUpdate = network.fast(hub);
+    var hubUpdate = network.slow(hub);
     //Send an update when the hub returns with teasers
     Promise.all([hubUpdate, fromNetwork, fromStorage]).then(function(results) {
       var [hubContent, netContent, storedContent] = results;
       var wpContent = netContent || storedContent;
+      wpContent.id = id;
       wpContent.teaser_image = hubContent.teaser_image || {};
-      db.set("articles", wpContent);
-      events.emit("articleUpdated", wpContent);
-    });
-    //compare results when we have some content
-    Promise.all([fromNetwork, fromStorage]).then(function(both) {
-      var [netted, stored] = both;
-      events.emit("articleUpdated", netted);
-      netted.id = id;
-      db.set("articles", netted);
+      //save the merged article to the database
+      db.set("articles", wpContent).then(function() {
+        events.emit("articleUpdated", wpContent);
+      });
     });
     //assume storage is faster, fall back on network
     return fromStorage.then(function(data) {
@@ -73,7 +73,7 @@ var api = {
     var data = {
       title: "Curated",
       slug: "challenges",
-      posts: [9970675, 9989893, 10000169]
+      posts: [9970675, 9989893, 10000169, 10003965]
     };
     return Promise.all(data.posts.map(api.getArticle)).then(function(results) {
       data.posts = results;

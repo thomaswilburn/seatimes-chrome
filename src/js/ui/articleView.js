@@ -1,6 +1,10 @@
+var loading = false;
 var container = document.querySelector(".article-panel");
 var webview = container.querySelector("webview");
-webview.addEventListener("loadstop", () => container.classList.add("active"));
+webview.addEventListener("loadstop", function() {
+  loading = false;
+  container.classList.add("active");
+});
 setTimeout(() => container.classList.add("ready"), 100);
 
 container.querySelector(".back-button").addEventListener("click", () => container.classList.remove("active"));
@@ -10,6 +14,7 @@ var sanitize = function(html) {
 };
 
 var loadArticle = function(article) {
+  if (loading) return;
   console.log(article);
   var html = `
 <!doctype html>
@@ -49,11 +54,12 @@ Object.defineProperty(document, "cookie", { get: () => "", set: () => "" });
   </body>
 </html>
   `;
-  var dataURL = `data:text/html;base64,${self.btoa(html)}`;
+  var dataURL = `data:text/html;base64,${self.btoa(unescape(encodeURIComponent(html)))}`;
   // webview.src = dataURL;
   try {
     webview.src = dataURL;
     webview.loadDataWithBaseUrl(dataURL, article.link);
+    loading = true;
     // container.classList.add("active");
   } catch (err) {
     console.log(err);

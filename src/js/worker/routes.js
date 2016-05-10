@@ -5,6 +5,7 @@ module.exports = {
   getArticle: function(data, respond) {
     api.getArticle(data.id).then(function(data) {
       data.content = sanitizer.scrub(data.content);
+      data.title = sanitizer.escapeString(data.title);
       respond(data);
     });
   },

@@ -21,19 +21,22 @@ var escapes = {
 var escapeRegex = new RegExp("(" + Object.keys(escapes).join("|") + ")", "g");
 var unicodeRegex = /[\u00A0-\u2666]/g;
 
+var escapeString = function(s) {
+  return s.replace(escapeRegex, c => escapes[c]).replace(unicodeRegex, c => `&#${c.charCodeAt(0)};`);
+};
+
 var scrub = function(html) {
   var dom = parser.parseDOM(html);
   walk(dom, function(node) {
     if (node.type == "text") {
-      node.data = node.data
-        .replace(escapeRegex, c => escapes[c])
-        .replace(unicodeRegex, c => `&#${c.charCodeAt(0)};`);
+      node.data = escapeString(node.data);
     }
     if (node.attribs && node.attribs["data-src-x-small"] && !node.attribs.src) {
       node.attribs.src = node.attribs["data-src-x-small"];
     }
   });
   return serialize(dom);
-}
+};
 
-module.exports = { scrub };
+
+module.exports = { scrub, escapeString };
