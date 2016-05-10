@@ -38,19 +38,21 @@ var api = {
   getArticle: function(id) {
     var hub = config.endpoint + "hub/post/" + id;
     var raw = config.endpoint + "posts/" + id;
-    var hubContent = network.fast(hub);
-    var rawContent = network.fast(raw);
-    var fromNetwork = Promise.all([hubContent, rawContent]).then(function(results) {
-      var [hub, raw] = results;
-      raw.teaser_image = hub.teaser_image || {};
-      return Promise.resolve(raw);
-    });
+    var fromNetwork = network.fast(raw);
     var fromStorage = db.get("articles", id);
-    //compare results when both are in
+    var hubUpdate = network.fast(hub);
+    //Send an update when the hub returns with teasers
+    Promise.all([hubUpdate, fromNetwork, fromStorage]).then(function(results) {
+      var [hubContent, netContent, storedContent] = results;
+      var wpContent = netContent || storedContent;
+      wpContent.teaser_image = hubContent.teaser_image || {};
+      db.set("articles", wpContent);
+      events.emit("articleUpdated", wpContent);
+    });
+    //compare results when we have some content
     Promise.all([fromNetwork, fromStorage]).then(function(both) {
       var [netted, stored] = both;
-      //TODO: if the network is newer, fire an update event with it
-      //either way, if it's valid, store it in the DB
+      events.emit("articleUpdated", netted);
       netted.id = id;
       db.set("articles", netted);
     });

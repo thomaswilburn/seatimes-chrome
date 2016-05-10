@@ -11,7 +11,22 @@
         <nav class="toolbar">
           <a class="menu-icon">Menu</a>
         </nav>
-        <div class="content"></div>
+        <div class="content" v-if="loaded">
+          <div class="top-item">
+            <a class="article-link" v-on:click="loadArticle(first.id)">
+              <img v-if="first.teaser_image" v-bind:src="getImage(first, 'standard_large')">
+              <h1>{{first.title}}</h1>
+            </a>
+          </div>
+          <ul class="remaining">
+            <li v-for="post in posts">
+              <a class="article-link" v-on:click="loadArticle(post.id)">
+                <span class="label">{{post.title}}</span>
+                <img v-if="post.teaser_image" v-bind:src="getImage(post, 'square_x_small')">
+              </a>
+            </li>
+          </ul>
+        </div>
       </section>
 
       <!-- actual article view -->

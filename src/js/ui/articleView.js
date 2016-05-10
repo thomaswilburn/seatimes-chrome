@@ -54,6 +54,7 @@ Object.defineProperty(document, "cookie", { get: () => "", set: () => "" });
   try {
     webview.src = dataURL;
     webview.loadDataWithBaseUrl(dataURL, article.link);
+    // container.classList.add("active");
   } catch (err) {
     console.log(err);
   }

@@ -1,5 +1,29 @@
 var ipc = require("../ipc");
 var events = require("../util/events");
+var Vue = require("vue");
+var view = new Vue({
+  el: ".section-lists",
+  data: { loaded: false, first: {}, posts: [] },
+  methods: {
+    getImage: function(post, size) {
+      if (!post.teaser_image || !post.teaser_image.sizes || !post.teaser_image.sizes[size]) return "";
+      return imageURLs[post.teaser_image.sizes[size]];
+    },
+    loadArticle: function(id) {
+      events.emit("loadArticle", { id });
+    }
+  }
+});
+
+events.on("articleUpdated", function(update) {
+  console.log("got update");
+  view.data.posts = view.data.posts.map(function(item) {
+    if (item.id == update.id) return update;
+    return item;
+  });
+});
+
+var imageURLs = {};
 
 var container = document.querySelector("section.section-lists");
 var content = container.querySelector(".content");
@@ -31,46 +55,18 @@ var loadImage = function(url) {
   });
 };
 
-var getImage = function(post, size) {
-  if (!post.teaser_image || !post.teaser_image.sizes || !post.teaser_image.sizes[size]) return null;
-  return post.teaser_image.sizes[size];
-};
-
 var loadSection = function(data) {
   var first = data.posts.shift();
   var images = data.posts.filter(p => p.teaser_image && p.teaser_image.sizes).map(p => loadImage(p.teaser_image.sizes.square_x_small));
-  if (getImage(first, "standard_large")) images.push(loadImage(getImage(first, "standard_large")));
+  if (first.teaser_image && first.teaser_image.sizes) images.push(loadImage(first.teaser_image.standard_large));
   Promise.all(images).then(function(blobs) {
-    var urlMap = blobs.reduce(function(map, value) {
-      map[value.url] = value.blob;
-      return map;
-    }, {});
-    var listHTML = data.posts.map(function(post) {
-      var thumbnail = "";
-      if (getImage(post, "square_x_small")) {
-        thumbnail = `<img src="${urlMap[getImage(post, "square_x_small")]}">`;
-      }
-      return `
-        <li>
-          <a article-id="${post.id}">
-            <span class="label">${post.title}</span>
-            ${thumbnail}
-          </a>
-        </li>
-      `;
-    }).join("");
-    content.innerHTML = `
-  <div class="top-item">
-    <a article-id="${first.id}">
-      <img src="${urlMap[getImage(first, "standard_large")]}">
-      <h1>${first.title}</h1>
-    </a>
-    <ul class="remaining">
-      ${listHTML}
-    </ul>
-  </div>
-    `;
+    blobs.forEach(def => imageURLs[def.url] = def.blob);
+    view.first = first;
+    view.posts = data.posts;
+    view.loaded = true;
   });
-}
+};
 
-module.exports = { loadSection }
+var wait = function() {};
+
+module.exports = { loadSection, wait }
