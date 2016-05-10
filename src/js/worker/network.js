@@ -2,7 +2,7 @@
 
 This module implements two queues for network requests--one that's high-
 priority, to be used by anything that's user-visible, and one that's low-
-priority for caching processes and so-on. 
+priority for caching processes and so-on.
 
 */
 
@@ -62,7 +62,6 @@ var facade = {
     return new Promise(function(ok, fail) {
       //this function actually fires the request when called
       slow.queue.push(function() {
-        console.log("requesting " + url);
         var req = xhr(url);
         req.then(ok, fail);
         return req;

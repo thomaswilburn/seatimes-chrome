@@ -32,10 +32,13 @@ var loadArticle = id => events.emit("loadArticle", { id });
 
 var section = {
   data: {
-    first: m.prop({}),
+    first: m.prop(false),
     posts: m.prop([])
   },
   view: function() {
+    if (!section.data.first()) {
+      return m("img.backdrop", { src: "backdrop.png" });
+    }
     var firstImage = getImage(section.data.first(), "standard_large");
     return [
       m("div.top-item", [
@@ -58,24 +61,27 @@ var section = {
 };
 
 events.on("articleUpdated", function(update) {
+  var updateFound = false;
   var first = section.data.first();
   if (first.id == update.id) {
     section.data.first(update);
     if (!getImage(first, "standard_large") && update.teaser_image.sizes) {
       loadImage(update.teaser_image.sizes.standard_large).then(() => m.render(contentDiv, section.view()));
     }
+    updateFound = true;
   } else {
     section.data.posts(section.data.posts().map(function(item) {
       if (item.id == update.id) {
         if (!getImage(item, "square_x_small") && update.teaser_image.sizes) {
           loadImage(update.teaser_image.sizes.square_x_small).then(() => m.render(contentDiv, section.view()));
         }
+        updateFound = true;
         return update;
       }
       return item;
     }));
   }
-  m.render(contentDiv, section.view());
+  if (updateFound) m.render(contentDiv, section.view());
 });
 
 var sections = [
@@ -98,6 +104,9 @@ var loadSection = function(data) {
   });
 };
 
-var wait = function() {};
+var wait = function() {
+  section.data.first(false);
+  m.render(contentDiv, section.view());
+};
 
 module.exports = { loadSection, wait }

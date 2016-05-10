@@ -37,6 +37,7 @@ events.on("loadArticle", function(def) {
 
 events.on("loadSection", function(def) {
   var sectionTimer = new metrics.Timer("UI", "Loaded section list");
+  sectionView.wait();
   ipc.request("getSection", def, function(data) {
     sectionView.loadSection(data);
     sectionTimer.end();
