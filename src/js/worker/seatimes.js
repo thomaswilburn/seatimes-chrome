@@ -23,7 +23,7 @@ var db = new Database("seatimes", 1, function() {
 
 self.db = db;
 
-var getCollection = function(slug, urlSegment) {
+var getCollection = function(urlSegment, slug) {
   var url = config.endpoint + urlSegment + slug;
   return network.fast(url).then(function(data) {
     var ids = data.posts.map(api.getArticle);
@@ -63,12 +63,8 @@ var api = {
       return Promise.resolve(data);
     });
   },
-  getSection: function(slug) {
-    return getCollection(slug, "hub/section/");
-  },
-  getZone: function(slug) {
-    return getCollection(slug, "hub/zone/");
-  },
+  getSection: getCollection.bind(null, "hub/section/"),
+  getZone: getCollection.bind(null, "hub/zone/"),
   getChallenges: function() {
     var data = {
       title: "Curated",

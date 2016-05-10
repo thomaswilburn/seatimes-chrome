@@ -39,11 +39,11 @@ var section = {
     if (!section.data.first()) {
       return m("img.backdrop", { src: "backdrop.png" });
     }
-    var firstImage = getImage(section.data.first(), "standard_large");
+    var firstImage = getImage(section.data.first(), "standard_large") || "placeholder.png";
     return [
       m("div.top-item", [
         m("a.article-link", { onclick: loadArticle.bind(null, section.data.first().id) }, [
-          firstImage ? m("img", { src: firstImage }) : null,
+          m("img", { src: firstImage }),
           m("h1", section.data.first().title)
         ])
       ]),
