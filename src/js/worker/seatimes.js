@@ -69,7 +69,7 @@ var api = {
     var data = {
       title: "Curated",
       slug: "challenges",
-      posts: [9970675, 9989893, 10000169, 10003965]
+      posts: [10084598, 10079495, 9970675, 9989893, 10000169, 10003965]
     };
     return Promise.all(data.posts.map(api.getArticle)).then(function(results) {
       data.posts = results;
