@@ -44,14 +44,14 @@ var section = {
       m("div.top-item", [
         m("a.article-link", { onclick: loadArticle.bind(null, section.data.first().id) }, [
           m("img", { src: firstImage }),
-          m("h1", section.data.first().title)
+          m("h1", m.trust(section.data.first().title))
         ])
       ]),
       m("ul.remaining", section.data.posts().map(function(post) {
         var postImage = getImage(post, "square_x_small");
         return m("li", [
           m("a.article-link", { onclick: loadArticle.bind(null, post.id) }, [
-            m("span.label", post.title),
+            m("span.label", m.trust(post.title)),
             postImage ? m("img", { src: postImage }) : null
           ])
         ]);
@@ -93,6 +93,9 @@ var sections = [
 
 var loadSection = function(data) {
   var first = data.posts.shift();
+  section.data.first(first);
+  section.data.posts(data.posts);
+  m.render(contentDiv, section.view());
   var images = data.posts
     .filter(p => p.teaser_image && p.teaser_image.sizes)
     .map(p => loadImage(p.teaser_image.sizes.square_x_small));

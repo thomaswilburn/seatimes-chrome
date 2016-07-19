@@ -10,7 +10,10 @@ module.exports = {
     });
   },
   getSection: function(data, respond) {
-    api.getSection(data.slug).then(respond);
+    api.getSection(data.slug).then(function(data) {
+      data.posts.forEach(p => p.title = sanitizer.escapeString(p.title));
+      respond(data);
+    });
   },
   getZone: function(data, respond) {
     api.getZone(data.slug).then(respond);

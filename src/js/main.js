@@ -39,6 +39,7 @@ events.on("loadSection", function(def) {
   var sectionTimer = new metrics.Timer("UI", "Loaded section list");
   sectionView.wait();
   ipc.request("getSection", def, function(data) {
+    console.log("Got section list data", def);
     sectionView.loadSection(data);
     sectionTimer.end();
   });
@@ -56,7 +57,7 @@ events.on("showMetrics", function() {
     html += `<li> ${key} <ul>`;
     var items = report[key];
     for (var line in items) {
-      html += `<li> ${line}: ${items[line]}ms`;
+      html += `<li> ${line}: ${items[line].toFixed(1)}ms`;
     }
     html += "</ul>";
   }

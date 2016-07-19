@@ -1,11 +1,22 @@
-var loading = false;
 var container = document.querySelector(".article-panel");
 var webview = container.querySelector("webview");
-webview.addEventListener("loadstop", function() {
-  loading = false;
-  container.classList.add("active");
-});
+
+// var events = "loadcommit loadstart contentload loadstop".split(" ");
+// events.forEach(ev => webview.addEventListener(ev, e => console.log("Webview state:", e.type)));
+var loadEvent = "contentload";
+
+// webview.addEventListener(loadEvent, function() {
+//   container.classList.add("active");
+// });
 setTimeout(() => container.classList.add("ready"), 100);
+
+var once = function(event, fn) {
+  var ready = function() {
+    webview.removeEventListener(event, ready);
+    fn();
+  };
+  webview.addEventListener(event, ready)
+};
 
 container.querySelector(".back-button").addEventListener("click", () => container.classList.remove("active"));
 
@@ -14,7 +25,6 @@ var sanitize = function(html) {
 };
 
 var loadArticle = function(article) {
-  if (loading) return;
   console.log(article);
   var html = `
 <!doctype html>
@@ -46,7 +56,7 @@ Object.defineProperty(document, "cookie", { get: () => "", set: () => "" });
   </head>
   <body>
     <h1>${article.title}</h1>
-    <img src="${article.teaser_image.sizes ? article.teaser_image.sizes.standard_large : ""}">
+    <img src="${article.teaser_image && article.teaser_image.sizes ? article.teaser_image.sizes.standard_large : ""}">
     ${article.content}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
     <script async src="http://www.seattletimes.com/wp-content/themes/st_refresh/js/bundle.min.js?ver=1461861640"></script>
@@ -57,9 +67,15 @@ Object.defineProperty(document, "cookie", { get: () => "", set: () => "" });
   var dataURL = `data:text/html;base64,${self.btoa(unescape(encodeURIComponent(html)))}`;
   // webview.src = dataURL;
   try {
-    webview.src = dataURL;
-    webview.loadDataWithBaseUrl(dataURL, article.link);
-    loading = true;
+    webview.stop();
+    webview.src = "data:text/html,<html>"
+    once("contentload", function() {
+      webview.src = dataURL;
+      webview.loadDataWithBaseUrl(dataURL, article.link);
+      once("loadstart", function() {
+        container.classList.add("active");
+      })
+    })
     // container.classList.add("active");
   } catch (err) {
     console.log(err);
